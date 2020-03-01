@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { cards } from '../cards';
 import Nav from './Nav';
 import $ from 'jquery';
 import Dev from "./Dev";
 import Api from "./Api";
 import Intro from "./Intro";
+import axios from 'axios';
 
 class Cards extends React.Component {
 
@@ -17,6 +17,15 @@ class Cards extends React.Component {
     };
   }
   componentDidMount() {
+    var _this = this;
+    this.serverRequest =
+      axios
+        .get("../data.json")
+        .then(function(result) {
+          _this.setState({
+            cards: result.data
+          });
+        })
     $(document).ready(function() {
       $( ".card" ).hover(
         function() {
@@ -27,10 +36,10 @@ class Cards extends React.Component {
       );
     });
   }
+
   render() {
     let cardlist = "No list found";
-    //const { recipes } = this.state;
-    const allCards = cards.map((card, index) => (
+    const allCards = this.state.cards.map((card, index) => (
       <div className="col-xs-12 col-sm-6 col-md-4 mt-4">
       <div className="card h-100 ">
         <div className="card-body">
@@ -73,7 +82,7 @@ class Cards extends React.Component {
               <p>Access information on how to use Forge APIs and Services</p>
             </div>
             <div className="row">
-              {cards.length > 0 ? allCards : noCard}
+              {this.state.cards.length > 0 ? allCards : noCard}
             </div>
           </main>
         </div>
